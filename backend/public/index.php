@@ -148,8 +148,7 @@ if ($uri === '/api/stats' && $method === 'GET') {
 if ($uri === '/api/swaps' && $method === 'GET') {
     $limit = $_GET['limit'] ?? 50;
     $swaps = $db->fetchAll(
-        "SELECT * FROM swaps ORDER BY block_number DESC LIMIT ?",
-        [(int)$limit]
+        "SELECT * FROM swaps ORDER BY block_number DESC LIMIT ". (int)$limit
     );
     
     echo json_encode(['swaps' => $swaps]);
