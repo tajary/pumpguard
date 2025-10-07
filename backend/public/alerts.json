@@ -1,0 +1,18 @@
+[
+    {
+        "id": 2,
+        "token_pair": "0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827",
+        "alert_type": "PumpWarning",
+        "description": "High swap activity detected (70 swaps in 10 min)",
+        "score": "1.0000",
+        "created_at": "2025-10-08 01:38:01"
+    },
+    {
+        "id": 1,
+        "token_pair": "0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827",
+        "alert_type": "PumpWarning",
+        "description": "High swap activity detected (65 swaps in 10 min)",
+        "score": "1.0000",
+        "created_at": "2025-10-08 01:32:16"
+    }
+]
