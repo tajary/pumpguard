@@ -46,7 +46,7 @@ function SwapChart({ swaps }) {
 
   return (
     <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl mb-8">
-      <h3 className="text-xl font-bold text-white mb-4">Swap Volume (Last Hour)</h3>
+      <h3 className="text-xl font-bold text-white mb-4">Swap Volume</h3>
       {chartData.length === 0 ? (
         <div className="h-64 flex items-center justify-center text-gray-400">
           No swap data available yet

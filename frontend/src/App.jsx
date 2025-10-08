@@ -7,6 +7,8 @@ import SwapChart from './components/SwapChart';
 import PairTabs from './components/PairTabs';
 import { getPairs, getAlerts, getStats, getSwaps } from './utils/api';
 import './index.css'
+import PumpGuardProcess from './components/PumpGuardProcess';
+import { Activity } from 'lucide-react';
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
@@ -132,7 +134,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900"> {/*bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 */}
       <Header 
         isConnected={isConnected}
         address={address}
@@ -147,20 +149,22 @@ function App() {
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-0 py-8">
         {!isConnected ? (
           <div className="text-center py-20">
             <div className="w-20 h-20 mx-auto mb-4 bg-purple-600 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+            <Activity className="w-8 h-8 mx-auto text-white" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-2">Welcome to PumpGuard AI</h2>
-            <p className="text-gray-400 text-lg">Connect your wallet to access multi-pair pump/dump detection</p>
+            <p className="text-gray-400 text-lg">
+            Real-time monitoring, analysis, and alerting system for detecting pump and dump schemes on Polygon
+            </p>
+            <PumpGuardProcess />
           </div>
         ) : (
           <>
             {/* NEW: Pair Tabs */}
+            <div className='bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900'>
             <PairTabs 
               pairs={pairs}
               selectedPair={showAllPairs ? 'all' : selectedPair}
@@ -170,6 +174,7 @@ function App() {
             <StatsPanel stats={stats} alertCount={alerts.length} />
             <SwapChart swaps={swaps} />
             <AlertList alerts={alerts} />
+            </div>
           </>
         )}
       </div>
