@@ -550,13 +550,13 @@ It isolates rare behaviors (outliers) that differ from normal trading activity.
 ```mermaid
 flowchart TD
 
-A[MySQL swaps table] --> B[Data Export<br>to JSON (swaps_features.json)]
+A[MySQL swaps table] --> B[Data Export to JSON (swaps_features.json)]
 B --> C[Python AI Module]
-C --> D[Data Cleaning<br>and Feature Scaling]
+C --> D[Data Cleaning and Feature Scaling]
 D --> E[Isolation Forest Model]
-E --> F[Anomaly Detection<br>(-1 = suspicious)]
-F --> G[Results Output<br>pumpguard_ai_output.json]
-G --> H[Backend Integration<br>AI-based Alerts in analyze_swaps.php]
+E --> F[Anomaly Detection (-1 = suspicious)]
+F --> G[Results Output pumpguard_ai_output.json]
+G --> H[Backend Integration AI-based Alerts in analyze_swaps.php]
 ```
 
 ---
