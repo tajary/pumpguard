@@ -240,6 +240,126 @@ The system implements three basic detection rules:
 - **Score**: 0.7 fixed (simplified for MVP)
 - **Indicates**: Potential liquidity manipulation
 
+
+## 🧠 AI Anomaly Detection (Experimental)
+
+> This module introduces machine learning–based anomaly detection to identify subtle pump-and-dump behavior that may not be captured by rule-based methods.
+
+### Overview
+
+The ML engine analyzes aggregated swap statistics per time window, such as:
+
+* `tx_count`: number of swaps in the time window
+* `total_in` / `total_out`: total token inflow/outflow
+* `unique_senders`: number of distinct traders
+* `avg_price_ratio`: average price ratio movement
+
+The model is trained in an **unsupervised** manner using the [`IsolationForest`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html) algorithm from `scikit-learn`.
+It isolates rare behaviors (outliers) that differ from normal trading activity.
+
+---
+
+### 🧩 Architecture Flow
+
+```mermaid
+flowchart TD
+
+A[MySQL swaps table] --> B[Data Export<br>to JSON (swaps_features.json)]
+B --> C[Python AI Module]
+C --> D[Data Cleaning<br>and Feature Scaling]
+D --> E[Isolation Forest Model]
+E --> F[Anomaly Detection<br>(-1 = suspicious)]
+F --> G[Results Output<br>pumpguard_ai_output.json]
+G --> H[Backend Integration<br>AI-based Alerts in analyze_swaps.php]
+```
+
+---
+
+### 🧠 Python Module
+
+```python
+import pandas as pd
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+# Step 1: Read JSON data
+df = pd.read_json('swaps_features.json')
+
+# Step 2: Clean data
+df = df.dropna()
+df = df[df['total_in'] > 0]
+df = df[df['total_out'] > 0]
+
+# Step 3: Define features
+features = ['tx_count', 'total_in', 'total_out', 'unique_senders', 'avg_price_ratio']
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(df[features])
+
+# Step 4: Train Isolation Forest
+model = IsolationForest(contamination=0.01, random_state=42)
+df['anomaly_score'] = model.fit_predict(X_scaled)
+
+# Step 5: Filter anomalies
+pumps = df[df['anomaly_score'] == -1]
+
+# Step 6: Output suspicious entries
+pumps.to_json('pumpguard_ai_output.json', orient='records', indent=2)
+```
+
+---
+
+### 🔍 Visualization
+
+The module also plots swap activity with anomaly points in red.
+
+```python
+for pair in df['pair_name'].unique():
+    subset = df[df['pair_name'] == pair]
+    plt.figure(figsize=(10,4))
+    plt.title(f"Transaction count over time - {pair}")
+    plt.plot(subset['time_window'], subset['tx_count'], label='tx_count', alpha=0.7)
+    plt.scatter(pumps[pumps['pair_name']==pair]['time_window'],
+                pumps[pumps['pair_name']==pair]['tx_count'],
+                color='red', label='anomaly', s=30)
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+```
+
+---
+
+### ⚡ Integration Points
+
+To integrate the AI module with the PHP backend:
+
+```php
+$mlOutput = json_decode(file_get_contents('pumpguard_ai_output.json'), true);
+
+foreach ($mlOutput as $entry) {
+    if ($entry['anomaly_score'] == -1) {
+        createAlert([
+            'pair_name' => $entry['pair_name'],
+            'alert_type' => 'AIAnomaly',
+            'description' => 'Anomalous swap behavior detected by ML model',
+            'score' => 0.9,
+        ]);
+    }
+}
+```
+
+---
+
+### 🧠 Future Enhancements
+
+* Add **temporal models (LSTM, GRU)** for sequence-based anomaly detection
+* Use **autoencoders** for unsupervised embeddings
+* Add **labelled dataset** to transition toward supervised detection
+* Deploy as a **Flask microservice** accessible via `/api/ml/predict`
+
+---
+
 ## Project Structure
 
 ```
