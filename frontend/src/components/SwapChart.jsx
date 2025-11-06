@@ -5,25 +5,48 @@ function SwapChart({ swaps }) {
   const chartData = useMemo(() => {
     if (!swaps || swaps.length === 0) return [];
     
-    // Group swaps by 5-minute intervals
-    const grouped = {};
+    // Group swaps by 5-minute intervals using local time
+    const intervalData = {};
+    
     swaps.forEach(swap => {
       const date = new Date(swap.created_at);
-      const minutes = Math.floor(date.getMinutes() / 5) * 5;
-      date.setMinutes(minutes, 0, 0);
-      const key = date.toISOString().substring(11, 16);
       
-      grouped[key] = (grouped[key] || 0) + 1;
+      // Round to 5-minute intervals in local time
+      const timestamp = date.getTime();
+      const roundedTimestamp = Math.floor(timestamp / (5 * 60 * 1000)) * (5 * 60 * 1000);
+      
+      // Format as local time
+      const localDate = new Date(roundedTimestamp);
+      const key = localDate.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      });
+      
+      // Store both display time and timestamp for proper sorting
+      if (!intervalData[roundedTimestamp]) {
+        intervalData[roundedTimestamp] = { 
+          timestamp: roundedTimestamp, 
+          displayTime: key, 
+          volume: 0 
+        };
+      }
+      intervalData[roundedTimestamp].volume += 1;
     });
     
-    return Object.entries(grouped)
-      .map(([time, count]) => ({ time, volume: count }))
-      .slice(-12); // Last hour
+    // Sort by timestamp and take last 12 intervals
+    return Object.values(intervalData)
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .slice(-12)
+      .map(({ displayTime, volume }) => ({ 
+        time: displayTime, 
+        volume 
+      }));
   }, [swaps]);
 
   return (
     <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl mb-8">
-      <h3 className="text-xl font-bold text-white mb-4">Swap Volume (Last Hour)</h3>
+      <h3 className="text-xl font-bold text-white mb-4">Swap Volume</h3>
       {chartData.length === 0 ? (
         <div className="h-64 flex items-center justify-center text-gray-400">
           No swap data available yet

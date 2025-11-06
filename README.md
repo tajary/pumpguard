@@ -1,49 +1,85 @@
-# PumpGuard AI - Trading Agent - Pump/Dump Detection
+# PumpGuard AI - Multi-Pair Pump/Dump Detection
 
-A full-stack MVP for detecting pump and dump schemes on Polygon using QuickSwap pair monitoring, wallet authentication, and real-time alerting.
+> Real-time AI-powered fraud detection for DeFi trading on Polygon
 
-## Features
+[![Polygon](https://img.shields.io/badge/Polygon-Mainnet-8247E5?logo=polygon)](https://polygon.technology/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php)](https://php.net)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org)
 
-- 🔐 Wallet authentication via MetaMask (SIWE-style)
-- 📊 Real-time swap monitoring on Polygon
-- 🚨 Automated alert generation for suspicious activity
-- 📈 Visual dashboard with charts and statistics
-- ⚡ REST API for data access
+---
 
-## Tech Stack
+## 🎯 Overview
 
-**Backend:**
+**PumpGuard AI** is a comprehensive security platform that monitors multiple QuickSwap trading pairs simultaneously, detecting pump & dump schemes, coordinated manipulation, and liquidity attacks in real-time. Built specifically for the Polygon ecosystem with enterprise-grade architecture.
+
+### Key Features
+
+- 🔐 **Wallet Authentication** - MetaMask integration with SIWE-style signing
+- 📊 **Multi-Pair Monitoring** - Track USDC/WETH, MATIC/USDC, QUICK/USDC simultaneously
+- 🤖 **AI Detection Engine** - Real-time pattern recognition for fraud detection
+- 🚨 **Smart Alerts** - Context-aware notifications with risk scoring
+- 📈 **Visual Analytics** - Interactive charts and comprehensive statistics
+- ⚡ **REST API** - Easy integration for third-party applications
+- 🎨 **Modern UI** - Tabbed interface with dark theme and glass morphism
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐         ┌──────────────────┐         ┌─────────────────┐
+│  React Frontend │ ◄─────► │   PHP Backend    │ ◄─────► │  Polygon RPC    │
+│  (Vite + Tabs)  │         │  (Multi-Pair)    │         │  (QuickSwap)    │
+└─────────────────┘         └──────────────────┘         └─────────────────┘
+         │                           │
+         │                           ▼
+         │                  ┌──────────────────┐
+         └─────────────────►│  MySQL Database  │
+                            │  (Pair-Specific) │
+                            └──────────────────┘
+```
+
+### Tech Stack
+
+**Backend**
 - PHP 8.x with Composer
-- MySQL database
-- Ethereum signature verification (Keccak + Elliptic)
+- MySQL 5.7+ for data persistence
+- Ethereum signature verification (Keccak, Elliptic)
 - JWT authentication
+- RESTful API architecture
 
-**Frontend:**
-- React 18 + Vite
-- Tailwind CSS
-- ethers.js v6
-- Recharts for visualizations
+**Frontend**
+- React 18 with Hooks
+- Vite for fast builds
+- Tailwind CSS for styling
+- ethers.js v6 for Web3 integration
+- Recharts for data visualization
+- Lucide React for icons
 
-**Blockchain:**
-- Polygon network
+**Blockchain**
+- Polygon network (low fees, fast finality)
 - QuickSwap DEX integration
 - eth_getLogs for event monitoring
+- Multi-pair contract monitoring
 
-## Prerequisites
+---
 
-- PHP 8.0 or higher
-- MySQL 5.7+ or PostgreSQL
-- Node.js 16+ and npm
-- Composer
-- MetaMask browser extension
+## 📦 Installation
 
-## Installation
+### Prerequisites
 
-### 1. Clone the repository
+- **PHP** 8.0 or higher
+- **MySQL** 5.7+ or PostgreSQL 12+
+- **Node.js** 16+ and npm
+- **Composer** 2.x
+- **MetaMask** browser extension (for frontend)
+
+### 1. Clone Repository
 
 ```bash
-git clone <repository-url>
-cd pump-guard-ai
+git clone https://github.com/tajary/pumpguard.git
+cd pumpguard
 ```
 
 ### 2. Backend Setup
@@ -54,22 +90,28 @@ cd backend
 # Install PHP dependencies
 composer install
 
-# Copy environment file
+# Copy environment configuration
 cp ../.env.example ../.env
 
-# Edit .env with your configuration
+# Edit configuration with your settings
 nano ../.env
 ```
 
-**Configure .env:**
+**Configure `.env`:**
 ```env
+# Database
 DB_DSN=mysql:host=localhost;dbname=trading_agent
 DB_USER=root
-DB_PASS=your_password
+DB_PASS=your_secure_password
+
+# Blockchain
 POLYGON_RPC=https://polygon-rpc.com
-PAIR_ADDRESS=0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827  # Example QuickSwap pair
+# Or use premium RPC for better performance:
+# POLYGON_RPC=https://polygon-mainnet.g.alchemy.com/v2/YOUR_KEY
+
+# Application
 APP_URL=http://localhost:8000
-JWT_SECRET=secret-key
+JWT_SECRET=your-random-secret-key-min-32-chars
 ```
 
 ### 3. Database Setup
@@ -78,8 +120,20 @@ JWT_SECRET=secret-key
 # Create database and tables
 mysql -u root -p < ../schema.sql
 
-# Or for PostgreSQL (adjust schema.sql for PostgreSQL syntax):
-psql -U postgres -f ../schema.sql
+# Verify tables were created
+mysql -u root -p trading_agent -e "SHOW TABLES;"
+```
+
+**Expected output:**
+```
++-------------------------+
+| Tables_in_trading_agent |
++-------------------------+
+| alerts                  |
+| nonces                  |
+| pair_stats              |
+| swaps                   |
++-------------------------+
 ```
 
 ### 4. Frontend Setup
@@ -87,159 +141,391 @@ psql -U postgres -f ../schema.sql
 ```bash
 cd ../frontend
 
-# Install dependencies
+# Install Node dependencies
 npm install
 
-# Start development server
+# Verify installation
+npm list react ethers
+```
+
+---
+
+## 🚀 Running the Application
+
+### Development Mode
+
+**Terminal 1: Start Backend**
+```bash
+cd backend
+php -S localhost:8000 -t public
+```
+
+**Terminal 2: Start Frontend**
+```bash
+cd frontend
 npm run dev
 ```
 
-### 5. Start Backend Server
-
+**Terminal 3: Fetch Swap Data**
 ```bash
-cd ../backend
-
-# Start PHP development server
-php -S localhost:8000 -t public
-
-# Or use the main directory as root:
-cd ..
-php -S localhost:8000 -t backend/public
+cd backend
+php fetch_swaps.php
 ```
 
-### 6. Setup Cron Jobs (Production)
+**Terminal 4: Run Analysis**
+```bash
+cd backend
+php analyze_swaps.php
+```
 
-Add to your crontab (`crontab -e`):
+### Access Points
+
+- **Frontend Dashboard**: http://localhost:3000
+- **Backend API**: http://localhost:8000/api
+- **API Documentation**: See [API Endpoints](#api-endpoints) section
+
+---
+
+## ⚙️ Configuration
+
+### Monitored Trading Pairs
+
+Edit `backend/config.php` to customize monitored pairs:
+
+```php
+'pairs' => [
+    [
+        'name' => 'USDC/WETH',
+        'address' => '0x853ee4b2a13f8a742d64c8f088be7ba2131f670d',
+        'token0' => 'USDC',
+        'token1' => 'WETH',
+        'token0_address' => '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+        'token1_address' => '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+        'enabled' => true,
+        'priority' => 1  // Higher priority = processed first
+    ],
+    // Add more pairs here...
+]
+```
+
+**Finding Pair Addresses:**
+- Visit [QuickSwap Analytics](https://info.quickswap.exchange/)
+- Or use [PolygonScan](https://polygonscan.com/) to find pair contracts
+- Or query the QuickSwap Factory contract
+
+### Adding New Pairs
+
+```bash
+# 1. Add to config.php
+# 2. Restart backend
+# 3. Run fetch_swaps.php to start collecting data
+php backend/fetch_swaps.php
+```
+
+---
+
+## 🔄 Production Deployment
+
+### 1. Setup Cron Jobs
+
+```bash
+crontab -e
+```
+
+Add the following entries:
 
 ```cron
-# Fetch new swaps every minute
-*/1 * * * * cd /path/to/pump-guard-ai/backend && php fetch_swaps.php >> /var/log/fetch_swaps.log 2>&1
+# Fetch swaps every minute from all pairs
+*/1 * * * * cd /var/www/pumpguard-ai/backend && php fetch_swaps.php >> /var/log/pumpguard/fetch.log 2>&1
 
-# Analyze swaps every 5 minutes
-*/5 * * * * cd /path/to/pump-guard-ai/backend && php analyze_swaps.php >> /var/log/analyze_swaps.log 2>&1
+# Analyze patterns every 5 minutes
+*/5 * * * * cd /var/www/pumpguard-ai/backend && php analyze_swaps.php >> /var/log/pumpguard/analyze.log 2>&1
+
+# Clean old nonces every hour
+0 * * * * mysql -u root -p'password' trading_agent -e "DELETE FROM nonces WHERE created_at < DATE_SUB(NOW(), INTERVAL 1 HOUR);" >> /var/log/pumpguard/cleanup.log 2>&1
 ```
 
-**For development/testing**, run manually:
+### 2. Build Frontend for Production
+
 ```bash
-# Terminal 1: Fetch swaps
-php backend/fetch_swaps.php
+cd frontend
+npm run build
 
-# Terminal 2: Analyze swaps
-php backend/analyze_swaps.php
+# Serve with nginx or Apache
+# Build output: frontend/dist/
 ```
 
-## Running the Application
+### 3. Nginx Configuration Example
 
-1. **Start Backend** (Terminal 1):
-   ```bash
-   php -S localhost:8000 -t backend/public
-   ```
+```nginx
+server {
+    listen 80;
+    server_name pumpguard.yourdomain.com;
 
-2. **Start Frontend** (Terminal 2):
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+    # Frontend (React build)
+    location / {
+        root /var/www/pumpguard-ai/frontend/dist;
+        try_files $uri $uri/ /index.html;
+    }
 
-3. **Access Application**:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000/api
+    # Backend API
+    location /api {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
 
-4. **Run Data Collection** (Terminal 3 & 4):
-   ```bash
-   # Fetch swaps
-   php backend/fetch_swaps.php
-   
-   # Analyze swaps
-   php backend/analyze_swaps.php
-   ```
+### 4. Security Hardening
 
-## Usage
+```bash
+# Set proper permissions
+chmod 600 .env
+chmod 755 backend/public
+chmod 644 backend/public/index.php
 
-### 1. Connect Wallet
+# Disable directory listing
+# Add to .htaccess or nginx config
 
-- Open http://localhost:3000
-- Click "Connect Wallet"
-- MetaMask will prompt you to connect
-- Sign the authentication message
-- Dashboard will load with your address
+# Enable HTTPS (use Let's Encrypt)
+sudo certbot --nginx -d pumpguard.yourdomain.com
+```
 
-### 2. Monitor Swaps
+---
 
-The system automatically:
-- Fetches swap events from the configured QuickSwap pair
-- Analyzes trading patterns every 5 minutes
-- Generates alerts based on detection rules
-
-### 3. View Alerts
-
-Alerts are displayed in the dashboard with:
-- Alert type (PumpWarning, Manipulation, LiquidityWarning)
-- Description of the detected pattern
-- Risk score (0-1)
-- Timestamp
-
-## API Endpoints
+## 📡 API Endpoints
 
 ### Authentication
 
-**GET /api/nonce**
-```bash
-curl "http://localhost:8000/api/nonce?address=0x..."
+#### Get Nonce
+```http
+GET /api/nonce?address=0x...
 ```
-Response: `{ "nonce": "abc123..." }`
 
-**POST /api/auth/verify**
-```bash
-curl -X POST http://localhost:8000/api/auth/verify \
-  -H "Content-Type: application/json" \
-  -d '{
-    "address": "0x...",
-    "message": "Sign this message...",
-    "signature": "0x..."
-  }'
+**Response:**
+```json
+{
+  "nonce": "a1b2c3d4e5f6..."
+}
 ```
-Response: `{ "success": true, "token": "jwt_token", "address": "0x..." }`
+
+#### Verify Signature
+```http
+POST /api/auth/verify
+Content-Type: application/json
+
+{
+  "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  "message": "Sign this message to authenticate...",
+  "signature": "0xabcd..."
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+}
+```
 
 ### Data Endpoints
 
-**GET /api/alerts**
-```bash
-curl "http://localhost:8000/api/alerts?limit=20" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+#### Get Monitored Pairs
+```http
+GET /api/pairs
+Authorization: Bearer YOUR_TOKEN
 ```
 
-**GET /api/stats**
-```bash
-curl "http://localhost:8000/api/stats" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+**Response:**
+```json
+{
+  "pairs": [
+    {
+      "name": "USDC/WETH",
+      "address": "0x853ee4b2a13f8a742d64c8f088be7ba2131f670d",
+      "token0": "USDC",
+      "token1": "WETH",
+      "total_swaps": 247,
+      "unique_traders": 42,
+      "last_updated": "2025-10-08 14:30:00"
+    }
+  ]
+}
 ```
 
-**GET /api/swaps**
-```bash
-curl "http://localhost:8000/api/swaps?limit=50" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+#### Get Alerts
+```http
+GET /api/alerts?limit=20&pair=0x853ee4b2a13f8a742d64c8f088be7ba2131f670d
+Authorization: Bearer YOUR_TOKEN
 ```
 
-## Detection Rules (MVP)
+**Parameters:**
+- `limit` (optional): Number of alerts to return (default: 20)
+- `pair` (optional): Filter by pair address (omit for all pairs)
 
-The system implements three basic detection rules:
+**Response:**
+```json
+{
+  "alerts": [
+    {
+      "id": 1,
+      "pair_address": "0x853ee4b2a13f8a742d64c8f088be7ba2131f670d",
+      "pair_name": "USDC/WETH",
+      "alert_type": "PumpWarning",
+      "description": "High swap activity detected (35 swaps in 10 min)",
+      "score": "0.7500",
+      "created_at": "2025-10-08 14:25:00"
+    }
+  ]
+}
+```
 
-### 1. Pump Warning
-- **Trigger**: More than 30 swaps in 10 minutes
-- **Score**: Proportional to swap count (max at 50+ swaps)
-- **Indicates**: Sudden high trading activity
+#### Get Statistics
+```http
+GET /api/stats?pair=0x853ee4b2a13f8a742d64c8f088be7ba2131f670d
+Authorization: Bearer YOUR_TOKEN
+```
 
-### 2. Manipulation Alert
-- **Trigger**: Less than 5 unique traders with 20+ swaps
-- **Score**: Based on trader diversity
-- **Indicates**: Coordinated trading by few addresses
+**Parameters:**
+- `pair` (optional): Filter by pair address (omit for aggregate stats)
 
-### 3. Liquidity Warning
-- **Trigger**: Multiple large swaps detected
-- **Score**: 0.7 fixed (simplified for MVP)
-- **Indicates**: Potential liquidity manipulation
+**Response:**
+```json
+{
+  "swaps": 247,
+  "traders": 42,
+  "alerts": 3,
+  "updated": "2025-10-08 14:30:00"
+}
+```
 
+#### Get Swaps
+```http
+GET /api/swaps?limit=50&pair=0x853ee4b2a13f8a742d64c8f088be7ba2131f670d
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Parameters:**
+- `limit` (optional): Number of swaps to return (default: 50)
+- `pair` (optional): Filter by pair address (omit for all pairs)
+
+**Response:**
+```json
+{
+  "swaps": [
+    {
+      "id": 1,
+      "tx_hash": "0xabcd...",
+      "block_number": 50000123,
+      "sender": "0x742d35Cc...",
+      "amount0_in": "1000.500000000000000000",
+      "amount1_out": "2.500000000000000000",
+      "pair_address": "0x853ee4b2a13f8a742d64c8f088be7ba2131f670d",
+      "pair_name": "USDC/WETH",
+      "created_at": "2025-10-08 14:20:00"
+    }
+  ]
+}
+```
+
+---
+
+## 🧪 Testing
+
+### Manual Testing
+
+**1. Test Wallet Authentication**
+```bash
+# Terminal 1: Start backend
+php -S localhost:8000 -t backend/public
+
+# Terminal 2: Test nonce generation
+curl "http://localhost:8000/api/nonce?address=0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+
+# Use MetaMask to sign, then test verification
+# (Use frontend or Postman for signature testing)
+```
+
+**2. Test Data Collection**
+```bash
+# Fetch swaps manually
+php backend/fetch_swaps.php
+
+# Verify data in database
+mysql -u root -p trading_agent -e "SELECT pair_name, COUNT(*) FROM swaps GROUP BY pair_name;"
+```
+
+**3. Test Analysis**
+```bash
+# Run analysis
+php backend/analyze_swaps.php
+
+# Check alerts were generated
+curl "http://localhost:8000/api/alerts?limit=5"
+```
+
+### Automated Testing
+
+```bash
+# Backend unit tests (if implemented)
+cd backend
+./vendor/bin/phpunit tests/
+
+# Frontend tests
+cd frontend
+npm test
+```
+
+### Load Testing
+
+```bash
+# Test API performance
+ab -n 1000 -c 10 -H "Authorization: Bearer YOUR_TOKEN" \
+   http://localhost:8000/api/stats
+
+# Expected: <100ms response time for 1000 requests
+```
+
+---
+
+## 🚨 Detection Rules
+
+### Current Rules (MVP)
+
+#### 1. Pump Warning
+**Trigger:** More than 30 swaps in 10 minutes on a single pair
+```php
+if ($swapCount > 30) {
+    $score = min(1.0, $swapCount / 50);
+    // Alert: PumpWarning
+}
+```
+**Risk Score:** 0.6 - 1.0 (proportional to swap count)
+
+#### 2. Manipulation Alert
+**Trigger:** Less than 5 unique traders with 20+ swaps
+```php
+if ($uniqueTraders < 5 && $swapCount > 20) {
+    $score = 1.0 - ($uniqueTraders / 10);
+    // Alert: Manipulation
+}
+```
+**Risk Score:** 0.5 - 1.0 (inverse of trader diversity)
+
+#### 3. Liquidity Warning
+**Trigger:** More than 5 large swaps (>1000 tokens) in 10 minutes
+```php
+$largeSwaps = count(array_filter($swaps, fn($s) => 
+    ($s['amount0_in'] + $s['amount1_out']) > 1000
+));
+if ($largeSwaps > 5) {
+    // Alert: LiquidityWarning
+}
+```
+**Risk Score:** 0.7 (fixed for MVP)
 
 ## 🧠 AI Anomaly Detection (Experimental)
 
@@ -360,189 +646,206 @@ foreach ($mlOutput as $entry) {
 
 ---
 
-## Project Structure
+## 🎨 User Interface
+
+### Dashboard Views
+
+#### All Pairs View
+- Aggregate statistics across all monitored pairs
+- Combined alert stream
+- Overview chart showing total activity
+
+#### Single Pair View
+- Pair-specific statistics
+- Filtered alerts for selected pair
+- Pair-specific swap volume chart
+- Token pair information
+
+### Components
 
 ```
-pump-guard-ai/
-├── backend/
-│   ├── composer.json           # PHP dependencies
-│   ├── config.php              # Configuration loader
-│   ├── fetch_swaps.php         # Cron: Fetch swap events
-│   ├── analyze_swaps.php       # Cron: Analyze and alert
-│   ├── lib/
-│   │   ├── Database.php        # Database wrapper
-│   │   ├── PolygonClient.php   # RPC client
-│   │   └── SignatureVerifier.php # Wallet auth
-│   └── public/
-│       └── index.php           # API router
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx             # Main app component
-│   │   ├── components/         # UI components
-│   │   └── utils/api.js        # API client
-│   ├── package.json
-│   └── vite.config.js
-├── schema.sql                  # Database schema
-├── .env.example               # Environment template
-└── README.md
+frontend/src/components/
+├── Header.jsx          # Wallet connection, navigation
+├── LoginModal.jsx      # MetaMask authentication flow
+├── PairTabs.jsx        # Multi-pair tab navigation
+├── StatsPanel.jsx      # Statistics cards (swaps, traders, alerts)
+├── AlertList.jsx       # Alert cards with risk scores
+└── SwapChart.jsx       # Volume chart with Recharts
 ```
 
-## Database Schema
+---
 
-### swaps
-- Stores all detected swap transactions
-- Indexed by block_number, sender, created_at
+## 🔧 Troubleshooting
 
-### alerts
-- Stores generated alerts
-- Indexed by alert_type, created_at
+### Common Issues
 
-### nonces
-- Temporary storage for authentication nonces
-- Auto-cleaned (10-minute expiry)
+#### Backend Issues
 
-## Security Notes
+**Problem: Signature verification fails**
+```bash
+# Solution: Check dependencies
+composer require kornrunner/keccak simplito/elliptic-php
+
+# Verify message format matches exactly
+# Ethereum prefix must be: "\x19Ethereum Signed Message:\n" + length
+```
+
+**Problem: Database connection fails**
+```bash
+# Check MySQL is running
+sudo systemctl status mysql
+
+# Test connection
+mysql -u root -p -e "SELECT 1;"
+
+# Verify credentials in .env
+cat .env | grep DB_
+```
+
+**Problem: No swaps being fetched**
+```bash
+# Verify RPC endpoint
+curl -X POST $POLYGON_RPC \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+
+# Check pair address is correct
+# Visit QuickSwap to verify: https://quickswap.exchange/
+
+# Check logs
+php backend/fetch_swaps.php 2>&1 | tee debug.log
+```
+
+#### Frontend Issues
+
+**Problem: Wallet won't connect**
+```bash
+# Solution:
+# 1. Install MetaMask extension
+# 2. Switch to Polygon network in MetaMask
+# 3. Clear browser cache and localStorage
+# 4. Check console for errors (F12)
+```
+
+**Problem: API calls fail (CORS)**
+```bash
+# Solution: Verify CORS headers in backend/public/index.php
+# Should include:
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+```
+
+**Problem: Charts not displaying**
+```bash
+# Check data exists
+curl http://localhost:8000/api/swaps?limit=10
+
+# Verify Recharts is installed
+npm list recharts
+
+# Check browser console for React errors
+```
+
+### Debug Mode
+
+Enable verbose logging:
+
+```php
+// In backend/config.php
+'debug' => true,
+
+// In backend code
+if ($config['debug']) {
+    error_log("Debug: " . json_encode($data));
+}
+```
+
+```javascript
+// In frontend
+// Add to .env.local
+VITE_DEBUG=true
+
+// In code
+if (import.meta.env.VITE_DEBUG) {
+    console.log('Debug:', data);
+}
+```
+
+---
+
+## 📈 Performance Optimization
+
+### Database Optimization
+
+```sql
+-- Add compound indexes for common queries
+CREATE INDEX idx_pair_created ON swaps(pair_address, created_at);
+CREATE INDEX idx_alert_pair_created ON alerts(pair_address, created_at);
+
+-- Analyze query performance
+EXPLAIN SELECT * FROM swaps 
+WHERE pair_address = '0x...' 
+AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE);
+```
+
+### Caching Strategy
+
+```php
+// Add Redis for alert caching
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+
+// Cache alerts for 30 seconds
+$cacheKey = "alerts:{$pairAddress}";
+$cached = $redis->get($cacheKey);
+if ($cached) {
+    return json_decode($cached, true);
+}
+
+// If not cached, fetch and store
+$alerts = $db->fetchAll(...);
+$redis->setex($cacheKey, 30, json_encode($alerts));
+```
+
+### Frontend Optimization
+
+```javascript
+// Use React.memo for expensive components
+export default React.memo(AlertList);
+
+// Debounce API calls
+import { debounce } from 'lodash';
+const debouncedFetch = debounce(fetchAlerts, 300);
+
+// Lazy load components
+const SwapChart = React.lazy(() => import('./components/SwapChart'));
+```
+
+---
+
+## 🔐 Security Best Practices
 
 ### Production Checklist
 
-- [ ] Change `JWT_SECRET` to a strong random value
-- [ ] Use environment variables (never commit .env)
-- [ ] Enable HTTPS for API endpoints
-- [ ] Set proper CORS origins (remove `*`)
+- [x] Change `JWT_SECRET` to cryptographically secure random value (32+ chars)
+- [x] Use environment variables (never commit `.env`)
+- [ ] Enable HTTPS with valid SSL certificate
+- [ ] Set specific CORS origins (remove `*`)
+- [ ] Implement rate limiting on API endpoints
+- [ ] Add request validation and sanitization
 - [ ] Use prepared statements (already implemented)
-- [ ] Add rate limiting to API endpoints
-- [ ] Validate all user inputs
-- [ ] Use a production RPC provider (Alchemy/QuickNode)
-- [ ] Setup proper logging and monitoring
-- [ ] Regular database backups
+- [ ] Set up Web Application Firewall (WAF)
+- [ ] Enable database backups (daily)
+- [ ] Implement logging and monitoring
+- [ ] Use premium RPC provider (Alchemy/QuickNode)
+- [ ] Add API key authentication for B2B integrations
 
-## Troubleshooting
+### Environment Variables
 
-### Backend Issues
-
-**Signature verification fails:**
-- Ensure `kornrunner/keccak` and `simplito/elliptic-php` are installed
-- Check that the message format matches exactly
-- Verify MetaMask is signing with the correct account
-
-**Database connection fails:**
-- Check MySQL is running: `sudo systemctl status mysql`
-- Verify credentials in .env
-- Ensure database exists: `mysql -u root -p -e "SHOW DATABASES;"`
-
-**No swaps being fetched:**
-- Verify PAIR_ADDRESS is correct
-- Check RPC endpoint is responding: `curl -X POST <RPC_URL> -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'`
-- Review logs: `php backend/fetch_swaps.php` for errors
-
-### Frontend Issues
-
-**Wallet won't connect:**
-- Install MetaMask extension
-- Ensure you're on a supported network (Polygon)
-- Check browser console for errors
-
-**API calls fail:**
-- Verify backend is running on port 8000
-- Check CORS headers in backend/public/index.php
-- Ensure token is being sent in Authorization header
-
-**Charts not displaying:**
-- Verify swap data exists: `curl http://localhost:8000/api/swaps`
-- Check browser console for React errors
-
-## Extending the System
-
-### Adding ML Detection
-
-We should replace the simple rules in `analyze_swaps.php` with ML predictions:
-
-```php
-// Current: Simple rules
-if ($swapCount > 30) { /* alert */ }
-
-// Future: ML microservice
-$mlEndpoint = 'http://localhost:5000/predict';
-$response = file_get_contents($mlEndpoint, false, stream_context_create([
-    'http' => [
-        'method' => 'POST',
-        'header' => 'Content-Type: application/json',
-        'content' => json_encode(['swaps' => $recentSwaps])
-    ]
-]));
-$predictions = json_decode($response, true);
-```
-
-
-### Adding More Trading Pairs
-
-Modify `config.php` to support multiple pairs:
-
-```php
-'pairs' => [
-    '0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827', // USDC-ETH
-    '0x...',  // Another pair
-]
-```
-
-Update `fetch_swaps.php` to loop through pairs.
-
-## Performance Optimization
-
-- **Batch inserts**: Group multiple swaps in single INSERT
-- **Database indexing**: Already configured in schema.sql
-- **Caching**: Add Redis for alert caching
-- **Rate limiting**: Implement in API router
-- **WebSocket**: Replace polling with real-time updates
-
-## Testing
-
-### Manual Testing
-
-1. **Test wallet auth:**
-   ```bash
-   # Get nonce
-   curl "http://localhost:8000/api/nonce?address=0xYourAddress"
-   
-   # Sign in MetaMask and verify
-   curl -X POST http://localhost:8000/api/auth/verify -d '{"address":"...","message":"...","signature":"..."}'
-   ```
-
-2. **Test data collection:**
-   ```bash
-   php backend/fetch_swaps.php
-   mysql -u root -p -e "SELECT COUNT(*) FROM trading_agent.swaps;"
-   ```
-
-3. **Test analysis:**
-   ```bash
-   php backend/analyze_swaps.php
-   curl "http://localhost:8000/api/alerts"
-   ```
-
-### Load Testing
-
-Use Apache Bench:
 ```bash
-ab -n 1000 -c 10 http://localhost:8000/api/stats
-```
+# Generate secure JWT secret
+openssl rand -hex 32
 
-## License
-
-MIT License - See LICENSE file for details
-
-## Support
-
-For issues and questions:
-- Check troubleshooting section
-- Review logs in browser console and PHP error logs
-- Verify all dependencies are installed correctly
-
-## Credits
-
-Built with:
-- PHP 8.x
-- React 18
-- ethers.js
-- Tailwind CSS
-- Recharts
+# Add to .env
+JWT_SECRET=yo

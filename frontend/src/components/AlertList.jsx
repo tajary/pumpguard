@@ -41,7 +41,13 @@ function AlertList({ alerts }) {
                     {getAlertIcon(alert.alert_type)}
                   </div>
                   <div>
-                    <h4 className="text-white font-semibold">{alert.alert_type}</h4>
+                    <div className="flex items-center space-x-2">
+                      <h4 className="text-white font-semibold">{alert.alert_type}</h4>
+                      {/* NEW: Show pair name badge */}
+                      <span className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-xs">
+                        {alert.pair_name}
+                      </span>
+                    </div>
                     <p className="text-gray-300 text-sm mt-1">{alert.description}</p>
                     <p className="text-gray-500 text-xs mt-2">{alert.created_at}</p>
                   </div>

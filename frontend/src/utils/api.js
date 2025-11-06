@@ -16,24 +16,44 @@ export async function verifySignature(address, message, signature) {
   return response.json();
 }
 
-export async function getAlerts(token, limit = 20) {
-  const response = await fetch(`${API_BASE}/alerts?limit=${limit}`, {
+export async function getPairs(token) {
+  const response = await fetch(`${API_BASE}/pairs`, {
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+  });
+  if (!response.ok) throw new Error('Failed to fetch pairs');
+  return response.json();
+}
+
+export async function getAlerts(token, limit = 20, pairAddress = null) {
+  const url = pairAddress 
+    ? `${API_BASE}/alerts?limit=${limit}&pair=${pairAddress}`
+    : `${API_BASE}/alerts?limit=${limit}`;
+  
+  const response = await fetch(url, {
     headers: token ? { 'Authorization': `Bearer ${token}` } : {},
   });
   if (!response.ok) throw new Error('Failed to fetch alerts');
   return response.json();
 }
 
-export async function getStats(token) {
-  const response = await fetch(`${API_BASE}/stats`, {
+export async function getStats(token, pairAddress = null) {
+  const url = pairAddress 
+    ? `${API_BASE}/stats?pair=${pairAddress}`
+    : `${API_BASE}/stats`;
+  
+  const response = await fetch(url, {
     headers: token ? { 'Authorization': `Bearer ${token}` } : {},
   });
   if (!response.ok) throw new Error('Failed to fetch stats');
   return response.json();
 }
 
-export async function getSwaps(token, limit = 50) {
-  const response = await fetch(`${API_BASE}/swaps?limit=${limit}`, {
+export async function getSwaps(token, limit = 50, pairAddress = null) {
+  const url = pairAddress 
+    ? `${API_BASE}/swaps?limit=${limit}&pair=${pairAddress}`
+    : `${API_BASE}/swaps?limit=${limit}`;
+  
+  const response = await fetch(url, {
     headers: token ? { 'Authorization': `Bearer ${token}` } : {},
   });
   if (!response.ok) throw new Error('Failed to fetch swaps');
