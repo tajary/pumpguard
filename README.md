@@ -638,14 +638,124 @@ foreach ($mlOutput as $entry) {
 
 ---
 
-### 🧠 Future Enhancements
+## 🧠 Temporal Anomaly Detection with LSTM (Experimental)
 
-* Add **temporal models (LSTM, GRU)** for sequence-based anomaly detection
-* Use **autoencoders** for unsupervised embeddings
-* Add **labelled dataset** to transition toward supervised detection
-* Deploy as a **Flask microservice** accessible via `/api/ml/predict`
+> This module uses a **sequence model** to capture temporal patterns in swaps and detect anomalies over time.
+
+### Overview
+
+* **Goal:** Identify suspicious trading activity that deviates from normal temporal patterns.
+
+* **Approach:** Train an **LSTM autoencoder** on historical swap features per time window.
+
+* **Features used:**
+
+  * `tx_count`: number of swaps
+  * `total_in` / `total_out`: token inflow/outflow
+  * `unique_senders`: distinct traders
+  * `avg_price_ratio`: average price movement
+
+* **Output:** For each time window, a **reconstruction error** is calculated. If the error exceeds a **threshold**, the period is marked as anomalous.
 
 ---
+
+### 🧩 Architecture Flow
+
+```mermaid
+flowchart TD
+A["Swap Features JSON"] --> B["Data Cleaning & Scaling"]
+B --> C["Sequence Creation (TIME_STEPS=20)"]
+C --> D["LSTM Autoencoder"]
+D --> E["Reconstruction Error Computation"]
+E --> F["Thresholding & Anomaly Detection"]
+F --> G["Results Output & Visualization"]
+```
+
+---
+
+### 🧠 Python Module
+
+```python
+# Read JSON and filter for a specific pair
+df = pd.read_json("swaps_features.json")
+df = df[df['pair_name'] == "MATIC/USDC"].sort_values('time_window')
+df = df.dropna()
+
+# Features
+features = ['tx_count', 'total_in', 'total_out', 'unique_senders', 'avg_price_ratio']
+data = df[features].values
+
+# Normalize features
+scaler = MinMaxScaler()
+scaled_data = scaler.fit_transform(data)
+
+# Create sequences for LSTM
+TIME_STEPS = 20
+X, y = [], []
+for i in range(TIME_STEPS, len(scaled_data)):
+    X.append(scaled_data[i - TIME_STEPS:i])
+    y.append(scaled_data[i])
+X, y = np.array(X), np.array(y)
+
+# LSTM Autoencoder
+model = Sequential([
+    LSTM(128, input_shape=(X.shape[1], X.shape[2]), return_sequences=True),
+    Dropout(0.2),
+    LSTM(64, return_sequences=False),
+    Dropout(0.2),
+    Dense(X.shape[2])
+])
+model.compile(optimizer='adam', loss='mse')
+
+# Train model
+history = model.fit(X, y, epochs=30, batch_size=32, validation_split=0.1, verbose=1)
+
+# Compute reconstruction error
+predicted = model.predict(X)
+mse = np.mean(np.power(X[:, -1, :] - predicted, 2), axis=1)
+threshold = np.mean(mse) + 3*np.std(mse)
+
+# Detect anomalies
+anomalies = df.iloc[TIME_STEPS:]
+anomalies['reconstruction_error'] = mse
+anomalies['is_anomaly'] = anomalies['reconstruction_error'] > threshold
+
+# Summary
+print(f"Total anomalies detected: {anomalies['is_anomaly'].sum()} out of {len(anomalies)}")
+```
+
+---
+
+### 🔍 Visualization
+
+```python
+plt.figure(figsize=(12,6))
+plt.plot(anomalies['time_window'], anomalies['reconstruction_error'], label='Reconstruction error')
+plt.axhline(y=threshold, color='r', linestyle='--', label='Anomaly threshold')
+plt.xticks(rotation=45)
+plt.legend()
+plt.title(f"Anomaly detection on {pair}")
+plt.tight_layout()
+plt.show()
+```
+
+* **Red dashed line:** threshold for anomaly detection
+* **Peaks above the line:** potential pump/dump or unusual trading activity
+
+---
+
+
+### 🧠 Future Enhancements
+
+* Add **multi-pair temporal modeling** (train LSTM on multiple pairs simultaneously)
+* Use **attention layers** to highlight which features contribute most to anomaly detection
+* Combine with **Isolation Forest results** for ensemble anomaly scoring
+* Deploy as **real-time streaming service** (e.g., Kafka + Python) for live swap monitoring
+
+---
+
+
+
 
 ## 🎨 User Interface
 
