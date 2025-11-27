@@ -112,17 +112,6 @@ flowchart TD
 
 ---
 
-## Performance Benchmarks (Tested Nov 2025)
-
-| Token     | Block Range     | Active Addresses | Whales Found | Runtime   |
-|-----------|------------------|------------------|--------------|-----------|
-| USDT      | 60M – 65M        | ~1,200           | 94           | 48 sec    |
-| USDC      | 62M – 65M        | ~900             | 78           | 41 sec    |
-| RETRO     | Latest 500k      | ~600             | 12           | 35 sec    |
-
-
----
-
 ## Use Cases
 
 - Detect whale accumulation before pumps
