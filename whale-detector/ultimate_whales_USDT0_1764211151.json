@@ -1,0 +1,122 @@
+{
+  "token": "USDT0",
+  "contract": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+  "total_supply": 923856428.287251,
+  "threshold_percent": 0.1,
+  "total_whales_found": 14,
+  "generated_at": "2025-11-27 06:09:11",
+  "whales": [
+    {
+      "address": "0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245",
+      "amount": 192568027.566379,
+      "percentage": 20.843934367960536,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245"
+    },
+    {
+      "address": "0x6ab707Aca953eDAeFBc4fD23bA73294241490620",
+      "amount": 17065053.070227,
+      "percentage": 1.8471542274013417,
+      "type": "Contract",
+      "label": "Contract",
+      "explorer": "https://polygonscan.com/address/0x6ab707Aca953eDAeFBc4fD23bA73294241490620"
+    },
+    {
+      "address": "0x290275e3db66394C52272398959845170E4DCb88",
+      "amount": 10288610.374773,
+      "percentage": 1.1136590123475336,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x290275e3db66394C52272398959845170E4DCb88"
+    },
+    {
+      "address": "0x2C2301FDB0bfA06EAABaA0122CbCEb2265337C25",
+      "amount": 9890188.198323,
+      "percentage": 1.070533028238873,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x2C2301FDB0bfA06EAABaA0122CbCEb2265337C25"
+    },
+    {
+      "address": "0x505e71695E9bc45943c58adEC1650577BcA68fD9",
+      "amount": 9498356.875237,
+      "percentage": 1.0281204507984127,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x505e71695E9bc45943c58adEC1650577BcA68fD9"
+    },
+    {
+      "address": "0xD5C08681719445A5Fdce2Bda98b341A49050d821",
+      "amount": 9344592.903279,
+      "percentage": 1.0114767421820139,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0xD5C08681719445A5Fdce2Bda98b341A49050d821"
+    },
+    {
+      "address": "0xfa0b641678F5115ad8a8De5752016bD1359681b9",
+      "amount": 3609564.631934,
+      "percentage": 0.3907062311214111,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0xfa0b641678F5115ad8a8De5752016bD1359681b9"
+    },
+    {
+      "address": "0x77134cbC06cB00b66F4c7e623D5fdBF6777635EC",
+      "amount": 2400142.586489,
+      "percentage": 0.25979605845668624,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x77134cbC06cB00b66F4c7e623D5fdBF6777635EC"
+    },
+    {
+      "address": "0x02a78632215262A94ce8651846e7D22ADc98Ce3C",
+      "amount": 2178126.460164,
+      "percentage": 0.23576460513481037,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x02a78632215262A94ce8651846e7D22ADc98Ce3C"
+    },
+    {
+      "address": "0x1AB4973a48dc892Cd9971ECE8e01DcC7688f8F23",
+      "amount": 1876881.655492,
+      "percentage": 0.20315728700092228,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x1AB4973a48dc892Cd9971ECE8e01DcC7688f8F23"
+    },
+    {
+      "address": "0x51E3D44172868Acc60D68ca99591Ce4230bc75E0",
+      "amount": 1618150.344813,
+      "percentage": 0.1751517113771573,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x51E3D44172868Acc60D68ca99591Ce4230bc75E0"
+    },
+    {
+      "address": "0x4CcD010148379ea531D6C587CfDd60180196F9b1",
+      "amount": 1145015.268148,
+      "percentage": 0.12393865898305845,
+      "type": "Contract",
+      "label": "Contract",
+      "explorer": "https://polygonscan.com/address/0x4CcD010148379ea531D6C587CfDd60180196F9b1"
+    },
+    {
+      "address": "0x019D0706D65c4768ec8081eD7CE41F59Eef9b86c",
+      "amount": 1047920.810705,
+      "percentage": 0.11342896781567603,
+      "type": "EOA",
+      "label": "Wallet",
+      "explorer": "https://polygonscan.com/address/0x019D0706D65c4768ec8081eD7CE41F59Eef9b86c"
+    },
+    {
+      "address": "0x60D55F02A771d515e077c9C2403a1ef324885CeC",
+      "amount": 936119.075488,
+      "percentage": 0.10132733256221238,
+      "type": "Contract",
+      "label": "Contract",
+      "explorer": "https://polygonscan.com/address/0x60D55F02A771d515e077c9C2403a1ef324885CeC"
+    }
+  ]
+}
