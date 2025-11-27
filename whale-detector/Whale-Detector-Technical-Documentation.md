@@ -90,12 +90,12 @@ Used to label whales as **EOA** or **Contract**
 ```mermaid
 flowchart TD
     A[Start: whale_detector.py] --> B[Connect to Polygon via Infura]
-    B --> C[Load Token Contract (symbol, decimals, totalSupply)]
-    C --> D[Call get_transfer_events()]
+    B --> C[Load Token Contract symbol, decimals, totalSupply]
+    C --> D[Call get_transfer_events]
     D --> E[PolygonScan V2 API getLogs → Transfer events]
     E --> F[Extract from/to addresses → Unique active holders]
-    F --> G[Call get_balances() → Multicall]
-    G --> H[Batch balanceOf() calls<br>30 addresses per call]
+    F --> G[Call get_balances → Multicall]
+    G --> H[Batch balanceOf calls 30 addresses per call]
     H --> I[Get current balances]
     I --> J[Calculate % of totalSupply]
     J --> K[Filter: ≥ THRESHOLD %]
@@ -103,7 +103,7 @@ flowchart TD
     L --> M[Sort by balance descending]
     M --> N[Print table + PolygonScan links]
     N --> O[Export full JSON report]
-    O --> P[Done — Whales Found!]
+    O --> P[Done - Whales Found!]
     
     style D fill:#ff9900,stroke:#333
     style G fill:#00cc66,stroke:#333
